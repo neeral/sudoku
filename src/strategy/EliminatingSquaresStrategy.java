@@ -34,10 +34,7 @@ class EliminatingSquaresStrategy extends AbstractStrategy {
 				int index = 27*(y/3) + 9*j + 3*(x/3) + i;
 				Cell sqCell = getCell(index);
 				if (!sqCell.isFilled()) {
-					sqCell.eliminateChoice(value);
-				
-					if (sqCell.isFilled())
-						getPopper().add(index);
+					eliminateChoice(index, value);
 				}
 			}	
 		}

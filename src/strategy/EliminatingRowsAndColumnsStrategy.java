@@ -11,7 +11,7 @@ import cells.Cell;
  */
 class EliminatingRowsAndColumnsStrategy extends AbstractStrategy {
 
-	EliminatingRowsAndColumnsStrategy(BoardAccessor board, Popper popper) {
+	public EliminatingRowsAndColumnsStrategy(BoardAccessor board, Popper popper) {
 		super(board, popper);
 	}
 
@@ -31,15 +31,11 @@ class EliminatingRowsAndColumnsStrategy extends AbstractStrategy {
 		for (int k=0; k<9; k++) {
 			Cell xCell = getCell(x, k);
 			if (!xCell.isFilled()) {
-				xCell.eliminateChoice(value);
-				if (xCell.isFilled())
-					getPopper().add(BoardManager.getI(x, k));
+				eliminateChoice(BoardManager.getI(x, k), value);
 			}
 			Cell yCell = getCell(k, y);
 			if (!yCell.isFilled()) {
-				yCell.eliminateChoice(value);
-				if (yCell.isFilled())
-					getPopper().add(BoardManager.getI(k, y));
+				eliminateChoice(BoardManager.getI(k, y), value);
 			}
 		}
 	}

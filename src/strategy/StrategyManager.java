@@ -1,8 +1,9 @@
 package strategy;
 
+import game.Numbers;
+import game.Numbers.TaskType;
 import game.SudokuException;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -19,9 +20,10 @@ public class StrategyManager {
 	private Strategy rows;
 	private Strategy squares;
 	private List<Strategy> strategies;
+	private List<Strategy> counting;
 	private ExecutorService ex;
 	
-	public StrategyManager(BoardAccessor board) {
+	public StrategyManager(BoardManager board) {
 		this.board = board;
 		this.waitingQueue = new LinkedList<Integer>();
 		this.pop = new Pop();
@@ -30,14 +32,21 @@ public class StrategyManager {
 		this.strategies = new LinkedList<Strategy>();
 		this.strategies.add(rows);
 		this.strategies.add(squares);
+		this.counting = new LinkedList<Strategy>();
+		this.counting.add(new CountingRowsStrategy(board, pop));
+		this.counting.add(new CountingColumnsStrategy(board, pop));
+		this.counting.add(new CountingSquaresStrategy(board, pop));
 		this.ex = Executors.newSingleThreadExecutor(); //Executors.newFixedThreadPool(10); 
 	}
 	
 	public void solve() throws SudokuException, InterruptedException {
 		// begin with GivenCells
-		for (int i=0; i<BoardManager.BOARD_SIZE; i++)
+		for (int i=0; i<Numbers.BOARD_SIZE; i++)
 			if (board.getCell(i).isFilled())
-				submitTask(i);
+				submitTask(TaskType.DETERMINISTIC, i);
+		// also fire off for all the 9 numbers as a start
+		for (int i=0; i<Numbers.BOARD_LENGTH; i++)
+			submitTask(TaskType.COUNTING, i);
 		// keep polling until all cells are filled in or we can't resolve any more squares
 		while (!board.isCompletelyFilledIn() && !waitingQueue.isEmpty()) {
 			System.out.println("board.isCompletelyFilledIn()=" + board.isCompletelyFilledIn() + "\twaitingQueue.size()=" + waitingQueue.size());
@@ -46,34 +55,35 @@ public class StrategyManager {
 		ex.shutdown();
 	}
 	
-	private void submitTask(int i) {
+	private void submitTask(TaskType type, int i) {
 		synchronized (waitingQueue) {
-			waitingQueue.add(i);
+			waitingQueue.add(Numbers.BOARD_SIZE * type.ordinal() + i);
 		}
-		ex.submit(new Worker(i, strategies, pop));
+		if (TaskType.DETERMINISTIC.equals(type)) ex.submit(new Worker(i, strategies, pop, TaskType.DETERMINISTIC));
+		else if (TaskType.COUNTING.equals(type)) ex.submit(new Worker(i, counting, pop, TaskType.COUNTING));
 	}
 	
-	private void completeTask(int i) {
+	private void completeTask(TaskType type, int i) {
 		synchronized (waitingQueue) {
-			waitingQueue.remove(Integer.valueOf(i));
+			waitingQueue.remove(Numbers.BOARD_SIZE * type.ordinal() + Integer.valueOf(i));
 		}
 	}
 	
 	class Pop implements Popper {
 		@Override
-		public void add(int i) {
-			System.out.println(Thread.currentThread().getName() + " [Popper] adding cell " + i + " onto the queue");
+		public void add(TaskType type, int i) {
+			System.out.println(Thread.currentThread().getName() + " [Popper] adding " + type + "/" + i + " onto the queue");
 			
 			if (board.isCompletelyFilledIn()) {
 				ex.shutdownNow();
 			} else {
-				submitTask(i);
+				submitTask(type, i);
 			}
 		}
 
 		@Override
-		public void completed(int i) {
-			completeTask(i);
+		public void completed(TaskType type, int i) {
+			completeTask(type, i);
 		}
 	}
 }

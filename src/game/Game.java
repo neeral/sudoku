@@ -26,7 +26,7 @@ public class Game {
 		long end = System.currentTimeMillis();
 		
 		System.out.println("\nAt end\n" + boardManager.printToString());
-		System.out.println("The Sudoku solver took " + (end - start) + "ms ... but is finished? " + boardManager.isCompletelyFilledIn());
+		System.out.println("The Sudoku solver took " + (end - start) + "ms ... but is it finished? " + boardManager.checkConstraints());
 	}
 
 }

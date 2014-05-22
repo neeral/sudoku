@@ -2,6 +2,8 @@ package strategy;
 
 import static org.junit.Assert.*;
 
+import game.Numbers;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +27,7 @@ public class EliminatingSquaresStrategyTest {
 		boardManager = new BoardManager();
 		boardManager.setUpBoard(startingBoard);
 
-		strategy = new EliminatingSquaresStrategy(boardManager, new PopperStub());
+		strategy = new EliminatingSquaresStrategy(boardManager, PopperStub.getSingleton());
 	}
 
 	@Test
@@ -34,7 +36,7 @@ public class EliminatingSquaresStrategyTest {
 
 		Integer[] square = { 30, 31, 32, 40, 41, 48, 49, 50 };
 
-		for (int i = 0; i < BoardManager.BOARD_SIZE; i++) {
+		for (int i = 0; i < Numbers.BOARD_SIZE; i++) {
 			final Set<Integer> possibilities = boardManager.getCell(i).getPossibilities();
 			if (i == 39) { // check cell itself
 				assertTrue(boardManager.getCell(39).isFilled());

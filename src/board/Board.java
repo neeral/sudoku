@@ -11,7 +11,7 @@ import game.UnsetSudokuException;
 
 class Board {
 	
-	private Cell[] cells = new Cell[BoardManager.BOARD_SIZE];
+	private Cell[] cells = new Cell[Numbers.BOARD_SIZE];
 	boolean checkColumn(int columnNo) {
 		final Set<Integer> choices = Numbers.getChoices();
 		try {
@@ -59,10 +59,10 @@ class Board {
 			cells[i] = cell;
 	}
 	private boolean validIndex(int i) {
-		return i>=0 && i<BoardManager.BOARD_SIZE;
+		return i>=0 && i<Numbers.BOARD_SIZE;
 	}
 	void setupEmptyBoard(CellFactory cellFactory) { // initialisation
-		for (int i=0; i<BoardManager.BOARD_SIZE; i++)
+		for (int i=0; i<Numbers.BOARD_SIZE; i++)
 			cells[i] = cellFactory.createEmptyCell();
 	}
 }

@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import game.Numbers;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class EliminatingRowsAndColumnsStrategyTest {
 		boardManager = new BoardManager();
 		boardManager.setUpBoard(startingBoard);
 
-		strategy = new EliminatingRowsAndColumnsStrategy(boardManager, new PopperStub());
+		strategy = new EliminatingRowsAndColumnsStrategy(boardManager, PopperStub.getSingleton());
 	}
 
 	@Test
@@ -36,7 +38,7 @@ public class EliminatingRowsAndColumnsStrategyTest {
 		Integer[] cols = { 3, 12, 21, 30, 48, 57, 66, 75 };
 		Integer[] rows = { 36, 37, 38, 40, 41, 42, 43, 44 };
 
-		for (int i = 0; i < BoardManager.BOARD_SIZE; i++) {
+		for (int i = 0; i < Numbers.BOARD_SIZE; i++) {
 			final Set<Integer> possibilities = boardManager.getCell(i).getPossibilities();
 			if (i == 39) { // check cell itself
 				assertTrue(boardManager.getCell(39).isFilled());

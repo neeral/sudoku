@@ -8,5 +8,5 @@ public interface Cell {
 	boolean isFilled();
 	Set<Integer> getPossibilities();
 	int getValue() throws UnsetSudokuException;
-	void eliminateChoice(int i);
+	boolean eliminateChoice(int i);
 }

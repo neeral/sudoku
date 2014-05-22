@@ -3,16 +3,19 @@ package strategy;
 import java.util.Collection;
 
 import game.SudokuException;
+import game.Numbers.TaskType;
 
 class Worker implements Runnable {
 	private Collection<Strategy> strategies;
 	private int i;
+	private TaskType type;
 	private Popper p;
 
-	Worker(int i, Collection<Strategy> strategies, Popper p) {
+	Worker(int i, Collection<Strategy> strategies, Popper p, TaskType type) {
 		this.i = i;
 		this.strategies = strategies;
 		this.p = p;
+		this.type = type;
 	}
 
 	@Override
@@ -22,7 +25,7 @@ class Worker implements Runnable {
 			for (Strategy s : strategies)
 				s.resolve(i);
 			
-			p.completed(i);
+			p.completed(type, i);
 			
 //			System.out.println(Thread.currentThread().getName() + " [Worker] finished for " + i);
 			

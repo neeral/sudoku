@@ -27,7 +27,9 @@ class GivenCell implements Cell{
 	}
 
 	@Override
-	public void eliminateChoice(int i) {}
+	public boolean eliminateChoice(int i) {
+		return false;
+	}
 
 	@Override
 	public boolean equals(Object o) {

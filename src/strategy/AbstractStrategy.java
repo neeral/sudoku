@@ -28,10 +28,14 @@ abstract class AbstractStrategy implements Strategy {
 		return board.getCell(i);
 	}
 	
+	void eliminateChoice(int i, int value) throws SudokuIndexException {
+		board.eliminateChoice(i, value, popper);
+	}
+	
 	Popper getPopper() {
 		return popper;
 	}
-
+	
 	@Override
 	public void resolve(int i) throws SudokuException {
 		cell = getCell(i);

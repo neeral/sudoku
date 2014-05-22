@@ -49,9 +49,9 @@ public class Counters {
 		for (int j=0; j<columns[x].length; j++) columns[x][j].decrement();
 		for (int j=0; j<squares[x/3][y/3].length; j++) squares[x/3][y/3][j].decrement();
 		
-		rows[y][value - 1].setPending();
-		columns[x][value - 1].setPending();
-		squares[x/3][y/3][value - 1].setPending();
+		rows[y][value - 1].setComplete();
+		columns[x][value - 1].setComplete();
+		squares[x/3][y/3][value - 1].setComplete();
 		// what about notifications?? could this be coded in a higher manager??
 	}
 	
@@ -76,27 +76,15 @@ public class Counters {
 		boolean isPending(){
 			return value == PENDING;
 		}
-		void setPending() {
-			value = PENDING;
-		}
 		void setComplete() {
 			value = COMPLETE;
 		}
+		@Override
+		public String toString() {
+			return "c"+ value;
+		}
 	}
 
-/*
-	int getCountForRow(int i, int value) {
-		return rows[i][value - 1];		
-	}
-
-	int getCountForColumn(int j, int value) {
-		return columns[j][value - 1];
-	}
-
-	int getCountForSquare(int i, int j, int value) {
-		return squares[i][j][value - 1];
-	}
-*/
 	boolean isPendingCountForRow(int i, int value) {
 		return rows[i][value - 1].isPending();	
 	}

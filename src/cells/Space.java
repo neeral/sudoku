@@ -24,9 +24,10 @@ class Space implements Cell {
 	}
 
 	@Override
-	public synchronized void eliminateChoice(int i) {
-		choices.remove(i);
+	public boolean eliminateChoice(int i) {
+		final boolean b = choices.remove(i);
 		if (choices.isEmpty()) throw new RuntimeException("Space is empty.");
+		return b;
 	}
 
 	@Override

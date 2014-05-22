@@ -1,22 +1,26 @@
 package board;
 
+import game.Numbers;
+import game.Numbers.TaskType;
 import game.SudokuException;
 import game.SudokuIndexException;
 import game.UnsetSudokuException;
 
 import java.util.Map;
 
+import strategy.Popper;
+
 import cells.Cell;
 import cells.CellFactory;
 
-public class BoardManager implements BoardAccessor {
-	public static final int BOARD_SIZE = 81;
+public class BoardManager implements BoardAccessor,BoardCountingAccessor {
 	private Board board;
+	private Counters counters;
 	private CellFactory cellFactory = new CellFactory();
 	
 	public boolean isCompletelyFilledIn() {
 		try {
-			for (int i = 0; i < BOARD_SIZE; i++)
+			for (int i = 0; i < Numbers.BOARD_SIZE; i++)
 				if (!board.getCell(i).isFilled())
 					return false;
 		} catch (SudokuIndexException e) {
@@ -42,11 +46,13 @@ public class BoardManager implements BoardAccessor {
 	
 	public void setUpBoard(Map<Integer, Integer> presetBoard) throws SudokuException {
 		board = new Board();
+		counters = new Counters();
 		board.setupEmptyBoard(cellFactory);
 		for (int i : presetBoard.keySet())
 			if (presetBoard.containsKey(i)) {
 				try {
 					board.setCell(i, cellFactory.createFilledInCell(presetBoard.get(i)));
+					counters.setChoice(i, presetBoard.get(i));
 				} catch (SudokuIndexException e) {
 					throw new SudokuException("Unable to prepare board. Bad entry was [" + i + "," + presetBoard.get(i) + "]", e);
 				}
@@ -69,7 +75,7 @@ public class BoardManager implements BoardAccessor {
 	@Override
 	public String printToString() {
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int i = 0; i < Numbers.BOARD_SIZE; i++) {
 			Cell cell;
 			try {
 				cell = getCell(i);
@@ -84,4 +90,34 @@ public class BoardManager implements BoardAccessor {
 		return sb.toString();
 	}
 
+	@Override
+	public void eliminateChoice(int i, int value, Popper pop) throws SudokuIndexException {
+		if (getCell(i).eliminateChoice(value))
+			if (counters.eliminateChoice(i, value))
+				pop.add(TaskType.COUNTING, value);
+		if (getCell(i).isFilled())
+			pop.add(TaskType.DETERMINISTIC, i);
+	}
+	
+	@Override
+	public boolean isPendingCountsForRow(int i, int value) {
+		return counters.isPendingCountForRow(i, value);
+	}
+	
+	public void setChoice(int i, int value, Popper pop) throws SudokuIndexException {
+		Integer[] choices = getCell(i).getPossibilities().toArray(new Integer[0]);
+		for (int choice : choices) if (choice != value) eliminateChoice(i, choice, pop);
+		assert(getCell(i).getPossibilities().size() == 1 && getCell(i).getPossibilities().contains(value));
+		counters.setComplete(i, value);
+	}
+
+	@Override
+	public boolean isPendingCountsForColumn(int j, int value) {
+		return counters.isPendingCountForColumn(j, value);
+	}
+
+	@Override
+	public boolean isPendingCountsForSquare(int i, int j, int value) {
+		return counters.isPendingCountForSquare(i, j, value);
+	}
 }
