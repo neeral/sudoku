@@ -21,13 +21,13 @@ class Worker implements Runnable {
 	@Override
 	public void run() {
 		try {
-//			System.out.println(Thread.currentThread().getName() + " [Worker] starting for " + i);
+			System.out.println(Thread.currentThread().getName() + " [Worker] starting for " + type + "/" + i);
 			for (Strategy s : strategies)
 				s.resolve(i);
 			
 			p.completed(type, i);
 			
-//			System.out.println(Thread.currentThread().getName() + " [Worker] finished for " + i);
+//			System.out.println(Thread.currentThread().getName() + " [Worker] finished for " + type + "/" + i);
 			
 		} catch (SudokuException e) {
 			System.out.println("An error occurred trying to resolve dependents of cell " + i);

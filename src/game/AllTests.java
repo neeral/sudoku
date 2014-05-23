@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	board.BoardManagerTest.class,
 	board.BoardTest.class,
+	board.CountersTest.class,
 	cells.CellFactoryTest.class,
 	cells.GivenCellTest.class,
 	cells.SpaceTest.class,

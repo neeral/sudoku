@@ -46,5 +46,9 @@ class GivenCell implements Cell{
 		return 31*value + super.hashCode();
 	}
 
+	@Override
+	public String toString() {
+		return "g[" + value + "]";
+	}
 	
 }

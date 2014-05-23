@@ -12,7 +12,7 @@ interface SudokuInput {
 }
 
 class SudokuInputImpl implements SudokuInput {
-	File file = new File("medium-sudoku-qu.csv");
+	File file = new File("hard-sudoku-qu.csv");
 
 	@Override
 	public Map<Integer, Integer> read() throws SudokuException {

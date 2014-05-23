@@ -45,4 +45,9 @@ class Space implements Cell {
 		return 31*choices.hashCode() + super.hashCode();
 	}
 
+	@Override
+	public String toString() {
+		return "s" + choices;
+	}
+
 }

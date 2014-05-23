@@ -9,7 +9,7 @@ public class Numbers  {
 	public static final Set<Integer> getChoices() {
 		return new HashSet<Integer>(Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }));
 	}
-	public enum TaskType { DETERMINISTIC, PREDICTIVE, COUNTING }
+	public enum TaskType { DETERMINISTIC, COUNTING, PREDICTIVE }
 	public static final int BOARD_SIZE = 81;
 	public static final int BOARD_LENGTH = 9;
 }

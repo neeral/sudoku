@@ -45,11 +45,11 @@ public class StrategyManager {
 			if (board.getCell(i).isFilled())
 				submitTask(TaskType.DETERMINISTIC, i);
 		// also fire off for all the 9 numbers as a start
-		for (int i=0; i<Numbers.BOARD_LENGTH; i++)
+		for (int i=1; i<=Numbers.BOARD_LENGTH; i++)
 			submitTask(TaskType.COUNTING, i);
 		// keep polling until all cells are filled in or we can't resolve any more squares
 		while (!board.isCompletelyFilledIn() && !waitingQueue.isEmpty()) {
-			System.out.println("board.isCompletelyFilledIn()=" + board.isCompletelyFilledIn() + "\twaitingQueue.size()=" + waitingQueue.size());
+			System.out.println("board.isCompletelyFilledIn()=" + board.isCompletelyFilledIn() + "\twaitingQueue.size()=" + waitingQueue.size() + "\n" + board.printToString());
 			ex.awaitTermination(1000, TimeUnit.MILLISECONDS);
 		}
 		ex.shutdown();
@@ -65,7 +65,7 @@ public class StrategyManager {
 	
 	private void completeTask(TaskType type, int i) {
 		synchronized (waitingQueue) {
-			waitingQueue.remove(Numbers.BOARD_SIZE * type.ordinal() + Integer.valueOf(i));
+			waitingQueue.remove(Integer.valueOf(Numbers.BOARD_SIZE * type.ordinal() + i));
 		}
 	}
 	
